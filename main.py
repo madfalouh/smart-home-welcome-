@@ -56,8 +56,10 @@ def run_alexa():
         tracks_dict = searchResults['tracks']
         tracks_items = tracks_dict['items']
         song = tracks_items[0]['external_urls']['spotify']
-        spotifyObject.add_to_queue(song,'6e46be61393591aba7f1275efdd2436463f1839a')
-
+        songs=[]
+        songs.append(song)
+        #spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
+        spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
     elif 'time' in command:
         time = datetime.datetime.now().strftime('%I:%M %p')
         talk('Current time is ' + time)
