@@ -1,15 +1,10 @@
 import cv2
-import winsound
-import time
 import speech_recognition as sr
 import pyttsx3
-#import pywhatkit
 import datetime
 import wikipedia
 import pyjokes
-import json
 import spotipy
-import webbrowser
 import random
 username = 'Mohamed'
 clientID = '86815c026a7041c591bcfd6576b96982'
@@ -20,7 +15,6 @@ token_dict = oauth_object.get_access_token()
 token = 'BQDvzNsZ3u7KPwlQnt1061lnU5oPtQ260INr05jLtkragMVopbezCcKtLUod1jGCcN7Z624PJn3rPMbDpyMmH6dClKm0Qb3GxFl2lq_hOChPg5ZF_mg2HfpGORTbqz3PuwTTX5uYfLMfiuFlaR5A7267KtLmR6tmvz0jU_DA_m1n7LBMu9ObSo_bDUYXTDohLVTOhntz9OKNiyvza2SN_asvhyg3w-ri6u3fw9Okat4-Io6LqQ'
 spotifyObject = spotipy.Spotify(auth=token)
 user = spotifyObject.current_user()
-#print(json.dumps(user,sort_keys=True, indent=4))
 listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -28,14 +22,12 @@ engine.setProperty('voice', voices[1].id)
 def talk(text):
     engine.say(text)
     engine.runAndWait()
-
 def rech (lists , item):
             p=True
             for list in lists :
                if(item['name'] ==list['name']) :
                    p=False
             return p
-
 def take_command():
     try:
         with sr.Microphone() as source:
@@ -65,15 +57,11 @@ def run_alexa():
         song = tracks_items[0]['external_urls']['spotify']
         songs=[]
         songs.append(song)
-        #spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
     if 'next track' in command:
-
             talk('skiping to the nexte track')
-            # spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
-            spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
+            spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
     if 'pause' in command:
-            # spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
             spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
     if 'artist' in command:
         song = command.replace('artist', '')
@@ -86,18 +74,14 @@ def run_alexa():
         result=spotifyObject.artist_albums(song,album_type='album')
         albums=result['items']
         final_album=[]
-
         while result['next']:
             result=spotifyObject.next(result)
             albums.extend(result['items'])
-
         for album in albums :
               a=rech(final_album,album)
               if(a):
                 final_album.append(album)
         randomsongs=[]
-        randomsong=[]
-        n=len(final_album)
 
         for i in range(0,50) :
             x = random.randint(0, len(final_album) - 1)
@@ -124,37 +108,14 @@ def run_alexa():
             songs.append(tracks_items[i]['external_urls']['spotify'])
             i = i + 1
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     elif 'time' in command:
         time = datetime.datetime.now().strftime('%I:%M %p')
         talk('Current time is ' + time)
-    elif 'who the heck is' in command:
-        person = command.replace('who the heck is', '')
+    elif 'who is' in command:
+        person = command.replace('who is', '')
         info = wikipedia.summary(person, 1)
         print(info)
         talk(info)
-    elif 'date' in command:
-        talk('sorry, I have a headache')
-    elif 'are you single' in command:
-        talk('I am in a relationship with wifi')
     elif 'joke' in command:
         talk(pyjokes.get_joke())
     else:
