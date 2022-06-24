@@ -4,6 +4,8 @@ import pyttsx3
 import datetime
 import wikipedia
 import pyjokes
+import time
+import winsound
 import spotipy
 import random
 username = 'Mohamed'
@@ -37,7 +39,6 @@ def take_command():
             command = command.lower()
             if 'alexa' in command:
                 command.replace('alexa', '')
-
     except:
         print("there is an error")
 
@@ -90,7 +91,6 @@ def run_alexa():
             if(s>50) :
                 s=50
                 break
-
         for i in range(0,s) :
             x = random.randint(0, len(final_album) - 1)
             album = final_album[x]['external_urls']['spotify']
@@ -99,7 +99,6 @@ def run_alexa():
             y=random.randint(0,len(tracks)-1)
             randomsongs.append(tracks_items[y]['external_urls']['spotify'])
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, randomsongs)
-
     if 'album' in command:
         song = command.replace('album', '')
         talk('playing ' + song)
@@ -146,8 +145,8 @@ while True:
         else :
          x, y, w, h = cv2.boundingRect(c)
          cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
-         #winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
-         #time.sleep(19)
+         winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
+         time.sleep(19)
          while True :
           run_alexa()
 
