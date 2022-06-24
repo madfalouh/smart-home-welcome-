@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import speech_recognition as sr
 import pyttsx3
@@ -14,7 +16,7 @@ clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
 redirectURI = 'http://google.com/'
 oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
 token_dict = oauth_object.get_access_token()
-token = 'BQDvzNsZ3u7KPwlQnt1061lnU5oPtQ260INr05jLtkragMVopbezCcKtLUod1jGCcN7Z624PJn3rPMbDpyMmH6dClKm0Qb3GxFl2lq_hOChPg5ZF_mg2HfpGORTbqz3PuwTTX5uYfLMfiuFlaR5A7267KtLmR6tmvz0jU_DA_m1n7LBMu9ObSo_bDUYXTDohLVTOhntz9OKNiyvza2SN_asvhyg3w-ri6u3fw9Okat4-Io6LqQ'
+token = 'BQDFBJOBedqkBAahOjl2ycQ__tjiVYOy7pXGabhpi3Cjxy2aIkUEN47bwMFihqLo4rib0G1zWHULjqIm--FI6Jsi8HUlF_bk23X1GmVolAzHXXJA-ggden2V6_ROqVFlvJKbWNSX5w2gMzzLmwsJIhN2YHUvuMKvGWiQuKaNQH9O1DXWRPzjXdZE3j79qe7TIcFjLr4NoBpt_VVJcaS65-4gmgBTlaF8tptjohbqTfyQeiATcD2bRWHRFGKujrQ44B68tq_tS2PaPj4'
 spotifyObject = spotipy.Spotify(auth=token)
 user = spotifyObject.current_user()
 listener = sr.Recognizer()
@@ -64,6 +66,20 @@ def run_alexa():
             spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
     if 'pause' in command:
             spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
+    if 'next ' in command:
+        song = command.replace('next ', '')
+        talk('adding to queue' + song)
+        searchQuery = song
+        searchResults = spotifyObject.search(searchQuery, 1, 0, "track")
+        tracks_dict = searchResults['tracks']
+        tracks_items = tracks_dict['items']
+        song = tracks_items[0]['external_urls']['spotify']
+        spotifyObject.add_to_queue(song,'6e46be61393591aba7f1275efdd2436463f1839a')
+    if 'new ' in command:
+        song = command.replace('new ', '')
+        talk('adding new playlist ' + song)
+        spotifyObject.user_playlist_create(spotifyObject.current_user(),song,True,False,"")
+        talk('playlist created with the name ' + song)
     if 'artist' in command:
         song = command.replace('artist', '')
         talk('playing ' + song)
@@ -125,9 +141,12 @@ def run_alexa():
         talk(info)
     elif 'joke' in command:
         talk(pyjokes.get_joke())
+    elif 'security' in command:
+        talk("activating security camera")
+        os.system('python sec.py')
+
     else:
         talk('Please say the command again.')
-
 cam = cv2.VideoCapture(0)
 while True:
     ret, frame1 = cam.read()

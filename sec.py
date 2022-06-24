@@ -1,8 +1,8 @@
 import cv2
 import winsound
-import time
 
-cam = cv2.VideoCapture(1)
+
+cam = cv2.VideoCapture(0)
 while cam.isOpened():
     ret, frame1 = cam.read()
     ret, frame2 = cam.read()
@@ -19,8 +19,8 @@ while cam.isOpened():
         else:
             x, y, w, h = cv2.boundingRect(c)
             cv2.rectangle(frame1, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
-            time.sleep(19)
+            winsound.PlaySound('sound.wav', winsound.SND_ASYNC)
+
 
             break
     if cv2.waitKey(10) == ord('q'):
