@@ -16,7 +16,7 @@ clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
 redirectURI = 'http://google.com/'
 oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
 token_dict = oauth_object.get_access_token()
-token = 'BQBfG0HkBRWl9K5JUMIsK7VyXiykXfcqeHNWq3FinccwipneV6rlH2W_mQ4Mys9R_8E9PSWwvUma4LTZmiWvb6EkNvqoo38XDWHSiJdcANsGZjicC36oswFU11ALzxfm8f8u_2sF3fyXaLx46BOgdbRyOkpMoSWFSvz4_yqHAEW8CePfGnU0Gc1HhdfYaTQXC2lEP0eBwMH_57BLXCid2CCreH553WkczKBdhFURSDfS'
+token = 'BQAjG_NosglP0QR2ksB9PNX4UqrBWhFnSXHb9RPH8fA8OV4r4ubFVO9W1y_nD-8H00sj8KGG-LFgxTYlH-T9_tBtkpX47Q3bDiBf-gCz9lFhaqKBl3OrpHPs7dISL-CIo1Oc2Vg4xJHQ1iy_sStPI26ARZGVnF08uMekaBoqZNG_i-p1SRrghsvMC3f30j1v85853J3YbdamQJgf6hvrZtdRSNSFyfs39jUKSmq0x7ge'
 spotifyObject = spotipy.Spotify(auth=token)
 user = spotifyObject.current_user()
 #print(json.dumps(user,sort_keys=True, indent=4))
@@ -58,8 +58,30 @@ def run_alexa():
         song = tracks_items[0]['external_urls']['spotify']
         songs=[]
         songs.append(song)
-        #spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
+    if 'next track' in command:
+            talk('skiping to the nexte track')
+            spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
+    if 'pause' in command:
+            spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
+    if 'album' in command:
+        song = command.replace('album', '')
+        talk('playing ' + song)
+        searchQuery = song
+        searchResults = spotifyObject.search(searchQuery, 1, 0, "album")
+        tracks_dict = searchResults['albums']
+        tracks_items = tracks_dict['items']
+        album=tracks_items[0]['external_urls']['spotify']
+        songs = []
+        tracks= spotifyObject.album_tracks(album,50,0 ,None)
+        tracks_items = tracks['items']
+        i=0
+        while i!= len(tracks_items) :
+            songs.append(tracks_items[i]['external_urls']['spotify'])
+            i=i+1
+        spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
+
+
     elif 'time' in command:
         time = datetime.datetime.now().strftime('%I:%M %p')
         talk('Current time is ' + time)
@@ -68,10 +90,6 @@ def run_alexa():
         info = wikipedia.summary(person, 1)
         print(info)
         talk(info)
-    elif 'date' in command:
-        talk('sorry, I have a headache')
-    elif 'are you single' in command:
-        talk('I am in a relationship with wifi')
     elif 'joke' in command:
         talk(pyjokes.get_joke())
     else:
