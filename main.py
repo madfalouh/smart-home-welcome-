@@ -10,13 +10,14 @@ import pyjokes
 import json
 import spotipy
 import webbrowser
+import random
 username = 'Mohamed'
 clientID = '86815c026a7041c591bcfd6576b96982'
 clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
 redirectURI = 'http://google.com/'
 oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
 token_dict = oauth_object.get_access_token()
-token = 'BQAjG_NosglP0QR2ksB9PNX4UqrBWhFnSXHb9RPH8fA8OV4r4ubFVO9W1y_nD-8H00sj8KGG-LFgxTYlH-T9_tBtkpX47Q3bDiBf-gCz9lFhaqKBl3OrpHPs7dISL-CIo1Oc2Vg4xJHQ1iy_sStPI26ARZGVnF08uMekaBoqZNG_i-p1SRrghsvMC3f30j1v85853J3YbdamQJgf6hvrZtdRSNSFyfs39jUKSmq0x7ge'
+token = 'BQDvzNsZ3u7KPwlQnt1061lnU5oPtQ260INr05jLtkragMVopbezCcKtLUod1jGCcN7Z624PJn3rPMbDpyMmH6dClKm0Qb3GxFl2lq_hOChPg5ZF_mg2HfpGORTbqz3PuwTTX5uYfLMfiuFlaR5A7267KtLmR6tmvz0jU_DA_m1n7LBMu9ObSo_bDUYXTDohLVTOhntz9OKNiyvza2SN_asvhyg3w-ri6u3fw9Okat4-Io6LqQ'
 spotifyObject = spotipy.Spotify(auth=token)
 user = spotifyObject.current_user()
 #print(json.dumps(user,sort_keys=True, indent=4))
@@ -28,6 +29,12 @@ def talk(text):
     engine.say(text)
     engine.runAndWait()
 
+def rech (lists , item):
+            p=True
+            for list in lists :
+               if(item['name'] ==list['name']) :
+                   p=False
+            return p
 
 def take_command():
     try:
@@ -58,12 +65,49 @@ def run_alexa():
         song = tracks_items[0]['external_urls']['spotify']
         songs=[]
         songs.append(song)
+        #spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
     if 'next track' in command:
+
             talk('skiping to the nexte track')
+            # spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
             spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
     if 'pause' in command:
+            # spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
             spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
+    if 'artist' in command:
+        song = command.replace('artist', '')
+        talk('playing ' + song)
+        searchQuery = song
+        searchResults = spotifyObject.search(searchQuery, 1, 0, "artist")
+        tracks_dict = searchResults['artists']
+        tracks_items = tracks_dict['items']
+        song = tracks_items[0]['external_urls']['spotify']
+        result=spotifyObject.artist_albums(song,album_type='album')
+        albums=result['items']
+        final_album=[]
+
+        while result['next']:
+            result=spotifyObject.next(result)
+            albums.extend(result['items'])
+
+        for album in albums :
+              a=rech(final_album,album)
+              if(a):
+                final_album.append(album)
+        randomsongs=[]
+        randomsong=[]
+        n=len(final_album)
+
+        for i in range(0,50) :
+            x = random.randint(0, len(final_album) - 1)
+            album = final_album[x]['external_urls']['spotify']
+            tracks = spotifyObject.album_tracks(album, 50, 0, None)
+            tracks_items = tracks['items']
+            y=random.randint(0,len(tracks)-1)
+            randomsongs.append(tracks_items[y]['external_urls']['spotify'])
+        spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, randomsongs)
+
     if 'album' in command:
         song = command.replace('album', '')
         talk('playing ' + song)
@@ -71,15 +115,32 @@ def run_alexa():
         searchResults = spotifyObject.search(searchQuery, 1, 0, "album")
         tracks_dict = searchResults['albums']
         tracks_items = tracks_dict['items']
-        album=tracks_items[0]['external_urls']['spotify']
+        album = tracks_items[0]['external_urls']['spotify']
         songs = []
-        tracks= spotifyObject.album_tracks(album,50,0 ,None)
+        tracks = spotifyObject.album_tracks(album, 50, 0, None)
         tracks_items = tracks['items']
-        i=0
-        while i!= len(tracks_items) :
+        i = 0
+        while i != len(tracks_items):
             songs.append(tracks_items[i]['external_urls']['spotify'])
-            i=i+1
+            i = i + 1
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     elif 'time' in command:
@@ -90,6 +151,10 @@ def run_alexa():
         info = wikipedia.summary(person, 1)
         print(info)
         talk(info)
+    elif 'date' in command:
+        talk('sorry, I have a headache')
+    elif 'are you single' in command:
+        talk('I am in a relationship with wifi')
     elif 'joke' in command:
         talk(pyjokes.get_joke())
     else:
