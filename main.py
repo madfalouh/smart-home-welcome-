@@ -82,8 +82,16 @@ def run_alexa():
               if(a):
                 final_album.append(album)
         randomsongs=[]
+        s=0
+        for album in final_album :
+            tracks = spotifyObject.album_tracks(album['external_urls']['spotify'], 50, 0, None)
+            tracks_items = tracks['items']
+            s=s+len(tracks_items)
+            if(s>50) :
+                s=50
+                break
 
-        for i in range(0,50) :
+        for i in range(0,s) :
             x = random.randint(0, len(final_album) - 1)
             album = final_album[x]['external_urls']['spotify']
             tracks = spotifyObject.album_tracks(album, 50, 0, None)
