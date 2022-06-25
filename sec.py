@@ -21,7 +21,7 @@ while cam.isOpened():
             cv2.rectangle(frame1, (x, y), (x + w, y + h), (0, 255, 0), 2)
             from pydub import AudioSegment
             from pydub.playback import play
-            winsound.PlaySound('sound.wav', winsound.SND_ASYNC)
+            winsound.Beep(500,200)
             break
     if cv2.waitKey(10) == ord('q'):
         break
