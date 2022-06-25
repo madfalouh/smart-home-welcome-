@@ -10,6 +10,7 @@ import time
 import winsound
 import spotipy
 import random
+
 username = 'Mohamed'
 clientID = '86815c026a7041c591bcfd6576b96982'
 clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
@@ -43,7 +44,7 @@ def take_command():
             if 'alexa' in command:
                 command.replace('alexa', '')
     except:
-        print("there is an error")
+        command=""
 
     return command
 
@@ -156,7 +157,7 @@ def run_alexa():
         talk(pyjokes.get_joke())
     elif 'security' in command:
         talk("activating security camera")
-
+        os.system("python sec.py")
     else:
         talk('Please say the command again.')
 
