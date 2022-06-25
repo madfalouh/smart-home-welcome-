@@ -22,9 +22,6 @@ while cam.isOpened():
             from pydub import AudioSegment
             from pydub.playback import play
             winsound.PlaySound('sound.wav', winsound.SND_ASYNC)
-
-
-
             break
     if cv2.waitKey(10) == ord('q'):
         break
