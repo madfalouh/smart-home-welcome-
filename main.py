@@ -15,9 +15,11 @@ clientID = '86815c026a7041c591bcfd6576b96982'
 clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
 redirectURI = 'http://google.com/'
 oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
-token_dict = oauth_object.get_access_token()
-token = 'BQDFBJOBedqkBAahOjl2ycQ__tjiVYOy7pXGabhpi3Cjxy2aIkUEN47bwMFihqLo4rib0G1zWHULjqIm--FI6Jsi8HUlF_bk23X1GmVolAzHXXJA-ggden2V6_ROqVFlvJKbWNSX5w2gMzzLmwsJIhN2YHUvuMKvGWiQuKaNQH9O1DXWRPzjXdZE3j79qe7TIcFjLr4NoBpt_VVJcaS65-4gmgBTlaF8tptjohbqTfyQeiATcD2bRWHRFGKujrQ44B68tq_tS2PaPj4'
-spotifyObject = spotipy.Spotify(auth=token)
+token_dict = oauth_object.get
+
+token = 'BQBoDH5WmPjOEhJ7v3LqR-HVwvfh7QAHyj8bWCj4bLdpCox7-UrA1WjeDqZ_955Pk9CPt0TULzHCzN9V55wTMljdaB8tXN07pOYoRQwmiZqZ1VULgSvp5ArmyquaoiPYQg-E9R08zIGopYHecZlzw2Itb21BAGPyxTDAI1qhhUpXK9udV9GozlyWpS1CNKnR9ItTs9Ii1lQu3BDY-C2RuCTo4SA0kgEWyJUwAyh9jGIQkE4pjR8A4URgBfyujSL4_2vSiwQHx6nNhtk'
+
+spotifyObject = spotipy.Spotify(auth=token_dict)
 user = spotifyObject.current_user()
 listener = sr.Recognizer()
 engine = pyttsx3.init()
@@ -62,12 +64,15 @@ def run_alexa():
         songs.append(song)
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
     if 'next track' in command:
-            talk('skiping to the nexte track')
+            talk('skipping to the next track')
             spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
     if 'pause' in command:
             spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
-    if 'next ' in command:
-        song = command.replace('next ', '')
+    if 'previous track' in command:
+        talk('previous track')
+        spotifyObject.previous_track('6e46be61393591aba7f1275efdd2436463f1839a')
+    if 'next song ' in command:
+        song = command.replace('next song ', '')
         talk('adding to queue' + song)
         searchQuery = song
         searchResults = spotifyObject.search(searchQuery, 1, 0, "track")
@@ -78,7 +83,8 @@ def run_alexa():
     if 'new ' in command:
         song = command.replace('new ', '')
         talk('adding new playlist ' + song)
-        spotifyObject.user_playlist_create(spotifyObject.current_user(),song,True,False,"")
+        spotifyObject.user_playlist_create(spotifyObject.current_user(),"édfg",True,True,"")
+        spotifyObject.user_playlist_create()
         talk('playlist created with the name ' + song)
     if 'artist' in command:
         song = command.replace('artist', '')
@@ -144,9 +150,10 @@ def run_alexa():
     elif 'security' in command:
         talk("activating security camera")
         os.system('python sec.py')
-
     else:
         talk('Please say the command again.')
+
+
 cam = cv2.VideoCapture(0)
 while True:
     ret, frame1 = cam.read()
