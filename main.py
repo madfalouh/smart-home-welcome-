@@ -14,11 +14,10 @@ username = 'Mohamed'
 clientID = '86815c026a7041c591bcfd6576b96982'
 clientSecret = 'd4bc149c382a48d4824ca34f56d71dba'
 redirectURI = 'http://google.com/'
-oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI)
-token_dict = oauth_object.get
-
-token = 'BQBoDH5WmPjOEhJ7v3LqR-HVwvfh7QAHyj8bWCj4bLdpCox7-UrA1WjeDqZ_955Pk9CPt0TULzHCzN9V55wTMljdaB8tXN07pOYoRQwmiZqZ1VULgSvp5ArmyquaoiPYQg-E9R08zIGopYHecZlzw2Itb21BAGPyxTDAI1qhhUpXK9udV9GozlyWpS1CNKnR9ItTs9Ii1lQu3BDY-C2RuCTo4SA0kgEWyJUwAyh9jGIQkE4pjR8A4URgBfyujSL4_2vSiwQHx6nNhtk'
-
+SCOPE='user-modify-playback-state'
+oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI,state=None,scope=SCOPE)
+token_dict = oauth_object.get_access_token()['access_token']
+print(token_dict)
 spotifyObject = spotipy.Spotify(auth=token_dict)
 user = spotifyObject.current_user()
 listener = sr.Recognizer()
@@ -81,11 +80,20 @@ def run_alexa():
         song = tracks_items[0]['external_urls']['spotify']
         spotifyObject.add_to_queue(song,'6e46be61393591aba7f1275efdd2436463f1839a')
     if 'new ' in command:
-        song = command.replace('new ', '')
-        talk('adding new playlist ' + song)
-        spotifyObject.user_playlist_create(spotifyObject.current_user(),"édfg",True,True,"")
-        spotifyObject.user_playlist_create()
-        talk('playlist created with the name ' + song)
+        song = command.replace('play', '')
+        talk('playing ' + song)
+        searchQuery = song
+        searchResults = spotifyObject.search(searchQuery, 1, 0, "playlist")
+        songs=[]
+        tracks_dict = searchResults['playlists']
+        tracks_items = tracks_dict['items']
+        song = tracks_items[0]['id']
+        results=spotifyObject.playlist(song)
+        for item in results['tracks']['items']:
+            music=item['track']
+            songs.append(music['external_urls']['spotify'])
+        spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
+
     if 'artist' in command:
         song = command.replace('artist', '')
         talk('playing ' + song)
@@ -171,8 +179,8 @@ while True:
         else :
          x, y, w, h = cv2.boundingRect(c)
          cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
-         winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
-         time.sleep(19)
+         #winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
+         #time.sleep(19)
          while True :
           run_alexa()
 
