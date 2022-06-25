@@ -18,7 +18,6 @@ redirectURI = 'http://google.com/'
 SCOPE='user-modify-playback-state'
 oauth_object = spotipy.SpotifyOAuth(clientID,clientSecret,redirectURI,state=None,scope=SCOPE)
 token_dict = oauth_object.get_access_token()['access_token']
-print(token_dict)
 spotifyObject = spotipy.Spotify(auth=token_dict)
 user = spotifyObject.current_user()
 listener = sr.Recognizer()
@@ -47,6 +46,15 @@ def take_command():
         command=""
 
     return command
+
+
+def sleep():
+    while True :
+     command = take_command()
+     if(command=='wake up'):
+        talk('waking up')
+        break
+
 
 
 def run_alexa():
@@ -158,6 +166,12 @@ def run_alexa():
     elif 'security' in command:
         talk("activating security camera")
         os.system("python sec.py")
+    elif 'stop' in command:
+        talk("see you soon")
+        quit()
+    elif 'sleep' in command:
+        talk("sleeping")
+        sleep()
     else:
         talk('Please say the command again.')
 
