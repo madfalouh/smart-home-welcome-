@@ -62,15 +62,15 @@ def run_alexa():
         songs=[]
         songs.append(song)
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a',None,songs)
-    if 'next track' in command:
+    elif 'next track' in command:
             talk('skipping to the next track')
             spotifyObject.next_track('6e46be61393591aba7f1275efdd2436463f1839a')
-    if 'pause' in command:
+    elif 'pause' in command:
             spotifyObject.pause_playback('6e46be61393591aba7f1275efdd2436463f1839a')
-    if 'previous track' in command:
+    elif 'previous track' in command:
         talk('previous track')
         spotifyObject.previous_track('6e46be61393591aba7f1275efdd2436463f1839a')
-    if 'next song ' in command:
+    elif 'next song ' in command:
         song = command.replace('next song ', '')
         talk('adding to queue' + song)
         searchQuery = song
@@ -79,7 +79,7 @@ def run_alexa():
         tracks_items = tracks_dict['items']
         song = tracks_items[0]['external_urls']['spotify']
         spotifyObject.add_to_queue(song,'6e46be61393591aba7f1275efdd2436463f1839a')
-    if 'new ' in command:
+    elif 'new ' in command:
         song = command.replace('play', '')
         talk('playing ' + song)
         searchQuery = song
@@ -93,8 +93,7 @@ def run_alexa():
             music=item['track']
             songs.append(music['external_urls']['spotify'])
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, songs)
-
-    if 'artist' in command:
+    elif 'artist' in command:
         song = command.replace('artist', '')
         talk('playing ' + song)
         searchQuery = song
@@ -129,7 +128,7 @@ def run_alexa():
             y=random.randint(0,len(tracks)-1)
             randomsongs.append(tracks_items[y]['external_urls']['spotify'])
         spotifyObject.start_playback('6e46be61393591aba7f1275efdd2436463f1839a', None, randomsongs)
-    if 'album' in command:
+    elif 'album' in command:
         song = command.replace('album', '')
         talk('playing ' + song)
         searchQuery = song
@@ -157,7 +156,7 @@ def run_alexa():
         talk(pyjokes.get_joke())
     elif 'security' in command:
         talk("activating security camera")
-        os.system('python sec.py')
+
     else:
         talk('Please say the command again.')
 
