@@ -30,7 +30,8 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 def talk(text):
     engine.say(text)
-    engine.runAndWait()
+    print(engine.runAndWait())
+    print(engine.isBusy())
 def rech (lists , item):
             p=True
             for list in lists :
@@ -41,11 +42,25 @@ def take_command():
     try:
         with sr.Microphone() as source:
             print('listening...')
-            voice = listener.listen(source)
+            voice = listener.listen(source,3,4)
+            print('recognition...')
             command = listener.recognize_google(voice)
+
             command = command.lower()
-            if 'alexa' in command:
-                command.replace('alexa', '')
+    except:
+        command=""
+
+    return command
+
+def take_command1():
+    try:
+        with sr.Microphone() as source:
+
+            voice = listener.listen(source,3,4)
+
+            command = listener.recognize_google(voice)
+
+            command = command.lower()
     except:
         command=""
 
@@ -162,7 +177,7 @@ def run_alexa():
         talk('Current time is ' + time)
     elif 'who is' in command:
         person = command.replace('who is', '')
-        info = wikipedia.summary(person, 1)
+        info = wikipedia.summary(person,auto_suggest=False)
         print(info)
         talk(info)
     elif 'joke' in command:
@@ -205,8 +220,9 @@ while True:
          x, y, w, h = cv2.boundingRect(c)
          cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
          winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
-         time.sleep(19)
          cam.release()
+         #time.sleep(19)
+         #cam.release()
          while True :
           run_alexa()
 
