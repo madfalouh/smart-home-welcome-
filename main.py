@@ -10,6 +10,10 @@ import time
 import winsound
 import spotipy
 import random
+import requests
+from bs4 import BeautifulSoup
+
+
 
 username = 'Mohamed'
 clientID = '86815c026a7041c591bcfd6576b96982'
@@ -166,6 +170,13 @@ def run_alexa():
     elif 'security' in command:
         talk("activating security camera")
         os.system("python sec.py")
+    elif 'news' in command:
+        url = 'https://www.bbc.com/news'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        headlines = soup.find('body').find_all('h3')
+        for x in headlines:
+            talk(x.text.strip())
     elif 'stop' in command:
         talk("see you soon")
         quit()
