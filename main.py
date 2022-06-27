@@ -228,7 +228,6 @@ def run_alexa():
     else:
         talk('Please say the command again.')
 
-
 cam = cv2.VideoCapture(0)
 while True:
     ret, frame1 = cam.read()
