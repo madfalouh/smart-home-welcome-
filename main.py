@@ -93,9 +93,9 @@ def sleep():
 def run_alexa():
     command = take_command()
     print(command)
-    if 'play' in command:
-        song = command.replace('play', '')
-        talk('playing ' + song)
+    if ("play " in command  ):
+        song = command.replace('play ', '')
+        talk('playing the song ' + song)
         searchQuery = song
         searchResults = spotifyObject.search(searchQuery, 1, 0, "track")
         tracks_dict = searchResults['tracks']
@@ -121,9 +121,9 @@ def run_alexa():
         tracks_items = tracks_dict['items']
         song = tracks_items[0]['external_urls']['spotify']
         spotifyObject.add_to_queue(song,'6e46be61393591aba7f1275efdd2436463f1839a')
-    elif 'new ' in command:
+    elif 'playlist' in command:
         song = command.replace('play', '')
-        talk('playing ' + song)
+        talk('playing the play list' + song)
         searchQuery = song
         searchResults = spotifyObject.search(searchQuery, 1, 0, "playlist")
         songs=[]
