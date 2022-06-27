@@ -1,6 +1,7 @@
 import os
 
 import cv2
+import pygame as pygame
 import speech_recognition as sr
 import pyttsx3
 import datetime
@@ -12,6 +13,19 @@ import spotipy
 import random
 import requests
 from bs4 import BeautifulSoup
+
+
+pygame.mixer.init()
+
+def stop():
+    pygame.mixer.music.stop()
+
+def pause():
+    pygame.mixer.music.pause()
+
+def unpause():
+    pygame.mixer.music.unpause()
+
 
 
 
@@ -30,8 +44,8 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 def talk(text):
     engine.say(text)
-    print(engine.runAndWait())
-    print(engine.isBusy())
+    engine.runAndWait()
+
 def rech (lists , item):
             p=True
             for list in lists :
@@ -175,11 +189,22 @@ def run_alexa():
     elif 'time' in command:
         time = datetime.datetime.now().strftime('%I:%M %p')
         talk('Current time is ' + time)
-    elif 'who is' in command:
+    elif 'who is'  in command:
+      try:
         person = command.replace('who is', '')
-        info = wikipedia.summary(person,auto_suggest=False)
+        info = wikipedia.summary(person,2,auto_suggest=False)
         print(info)
         talk(info)
+      except :
+         talk("cant find anything now" )
+    elif 'what is'   in command:
+      try:
+        person = command.replace('what is', '')
+        info = wikipedia.summary(person,2,auto_suggest=False)
+        print(info)
+        talk(info)
+      except :
+         talk("cant find anything now" )
     elif 'joke' in command:
         talk(pyjokes.get_joke())
     elif 'security' in command:
@@ -198,6 +223,8 @@ def run_alexa():
     elif 'sleep' in command:
         talk("sleeping")
         sleep()
+    elif 'hello' in command:
+        talk("hello what can i do for you")
     else:
         talk('Please say the command again.')
 
@@ -219,10 +246,10 @@ while True:
         else :
          x, y, w, h = cv2.boundingRect(c)
          cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
-         winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
+         #winsound.PlaySound('alert.wav', winsound.SND_ASYNC)
+         talk("hello"+username+"welcome again")
+         time.sleep(2)
          cam.release()
-         #time.sleep(19)
-         #cam.release()
          while True :
           run_alexa()
 
