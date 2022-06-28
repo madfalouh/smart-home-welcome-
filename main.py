@@ -8,7 +8,7 @@ import datetime
 import wikipedia
 import pyjokes
 import time
-import winsound
+
 import spotipy
 import random
 import requests
